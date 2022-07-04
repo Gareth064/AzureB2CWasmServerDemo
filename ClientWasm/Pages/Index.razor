@@ -1,9 +1,26 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject HttpClient Http
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>TenantId</h1>
+@tenantId
 
-Welcome to your new app.
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    private string tenantId = "";
+    protected override async Task OnInitializedAsync()
+    {        
+        try
+        {
+            tenantId = await Http.GetStringAsync("tenant/2bba57e9-85d8-4f8b-b7d4-a401e96c4179");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+}
