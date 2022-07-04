@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientWasm", "ClientWasm\ClientWasm.csproj", "{9F22E1A2-2D0B-400B-9380-E5D914AD938C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientWasm", "ClientWasm\ClientWasm.csproj", "{9F22E1A2-2D0B-400B-9380-E5D914AD938C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApi", "ServerApi\ServerApi.csproj", "{06ACDB97-AC86-4F2D-8FBE-3B787E9DE37A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerApi", "ServerApi\ServerApi.csproj", "{06ACDB97-AC86-4F2D-8FBE-3B787E9DE37A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
