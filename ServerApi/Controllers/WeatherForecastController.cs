@@ -5,7 +5,7 @@ namespace ServerApi.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class WeatherForecastController : ControllerBase
+public class WeatherForecastController : UserAuthBaseController
 {
     private static readonly string[] Summaries = new[]
     {
@@ -13,21 +13,28 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
+    private readonly IHttpContextAccessor httpContext;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, IHttpContextAccessor httpContext)
     {
         _logger = logger;
+        this.httpContext=httpContext;
     }
 
     [HttpGet]
     public IEnumerable<WeatherForecast> Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        if (this.Tenant)
         {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            }).ToArray();
+        }
+
+        return null;
+
     }
 }

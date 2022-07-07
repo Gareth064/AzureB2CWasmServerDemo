@@ -10,6 +10,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddControllers();
 
+builder.Services.AddHttpContextAccessor();
+
 var app = builder.Build();
 
 // CORS - Allow calling the API from WebBrowsers
