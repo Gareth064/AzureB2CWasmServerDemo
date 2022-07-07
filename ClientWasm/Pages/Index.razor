@@ -1,26 +1,35 @@
 ﻿@page "/"
+@using System.Security.Claims
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 
 <PageTitle>Index</PageTitle>
 
-<h1>TenantId</h1>
-@tenantId
+@if (user is not null)
+{
+    <h1 style="color: darkgreen">User is authenticated!</h1>
+    <h2>TenantId</h2>
+    @tenantId
+    <h2>Username</h2>
+    @userName
+}
+else
+{
+    <h1 style="color: darkred">User is NOT authenticated!</h1>
+}
 
-
-@code{
+@code {
     private string tenantId = "";
+    private string userName = "";
+    private ClaimsPrincipal? user;
+
     protected override async Task OnInitializedAsync()
-    {        
-        try
-        {
-            tenantId = await Http.GetStringAsync("tenant/2bba57e9-85d8-4f8b-b7d4-a401e96c4179");
-        }
-        catch (AccessTokenNotAvailableException exception)
-        {
-            exception.Redirect();
-        }
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+        
     }
 }
