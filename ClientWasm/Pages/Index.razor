@@ -2,7 +2,7 @@
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@attribute [Authorize]
+@attribute [Authorize(Policy ="HasValidSubscription")]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 
@@ -15,6 +15,13 @@
     @tenantId
     <h2>Username</h2>
     @userName
+    <h2>Claims</h2>
+    <ul>
+        @foreach (var claim in user.Claims)
+        {
+            <li>@claim.Type : @claim.Value</li>
+        }
+    </ul>
 }
 else
 {
@@ -30,6 +37,8 @@ else
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         user = authState.User;
-        
+        var claims = user.Claims;
+        tenantId = claims.Where(c => c.Type == "tenantId").FirstOrDefault().Value;
+        userName = user.Identity.Name;
     }
 }

@@ -39,6 +39,7 @@ public class CustomAccountFactory : AccountClaimsPrincipalFactory<CustomRemoteUs
             {
                 var userIdentity = (ClaimsIdentity)initialUser.Identity;
                 userIdentity.AddClaim(new Claim("tenantId", tenantId));
+                userIdentity.AddClaim(new Claim("HasValidSubscription", "true"));
             }
         }
 

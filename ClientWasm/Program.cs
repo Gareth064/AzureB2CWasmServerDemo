@@ -30,4 +30,8 @@ builder.Services.AddMsalAuthentication<RemoteAuthenticationState,CustomRemoteUse
     options.ProviderOptions.DefaultAccessTokenScopes.Add("https://ecommanageruk.onmicrosoft.com/d1926614-d7e7-45ae-b3e1-50a8cc6c727d/Data.ReadWrite");
 }).AddAccountClaimsPrincipalFactory<RemoteAuthenticationState,CustomRemoteUserAccount,CustomAccountFactory>();
 
+builder.Services.AddAuthorizationCore(options =>
+    options.AddPolicy("HasValidSubscription", policy => policy.RequireClaim("HasValidSubscription"))
+);
+
 await builder.Build().RunAsync();
