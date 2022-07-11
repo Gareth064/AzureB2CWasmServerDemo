@@ -26,14 +26,16 @@ public class CheckWorkspaceStatusMiddleware
             //TODO: Implement CheckWorkspaceStatus middleware
             //check if user is associated with a workspace
             //return bad request invalid workspaceId
-            var workspaces = new Dictionary<string, string>();
-            workspaces.Add("2bba57e9-85d8-4f8b-b7d4-a401e96c4170", "myshop");
-            workspaces.TryGetValue("2bba57e9-85d8-4f8b-b7d4-a401e96c4179", out string workspaceId);
+            var workspaces = new List<Workspace>();
+            workspaces.Add(new Workspace { Id="1234", Name="My Shop", HasValidSubscription=true, Owner="2bba57e9-85d8-4f8b-b7d4-a401e96c4179" });
+            workspaces.Add(new Workspace { Id="1235", Name="Their Shop", HasValidSubscription=true, Owner="2bba57e9-85d8-4f8b-b7d4-a401e96c4170" });
+            var userId = httpContext.User.Claims.Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier").FirstOrDefault().Value;
+            var workspace = workspaces.Where(w => w.Owner == userId).FirstOrDefault();
 
-            if (String.IsNullOrEmpty(workspaceId))
+            if (workspace is null)
             {
-                httpContext.Response.Clear();
-                httpContext.Response.Redirect("https://localhost:5001/counter", false);
+                //httpContext.Response.Clear();
+                //httpContext.Response.Redirect("https://localhost:5001/counter", false);
                 //httpContext.Response.StatusCode = (int)StatusCodes.Status400BadRequest;
                 //var bytes = Encoding.UTF8.GetBytes("User has no Workspace Assocaited");
                 //await httpContext.Response.Body.WriteAsync(bytes);
@@ -41,7 +43,7 @@ public class CheckWorkspaceStatusMiddleware
             }
 
             //add workspaceId to the httpContext as an item
-            httpContext.Items["workspaceId"] = workspaceId;
+            httpContext.Items["workspaceId"] = workspace.Id;
 
             //add any roles to the httpContext claims, if they are used
         }

@@ -1,7 +1,7 @@
 ﻿@page "/fetchdata"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@attribute [Authorize]
+@attribute [Authorize (Policy ="CanUseApp")]
 @inject HttpClient Http
 
 <PageTitle>Weather forecast</PageTitle>

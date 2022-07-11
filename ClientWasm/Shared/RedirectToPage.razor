@@ -1,8 +1,9 @@
 ﻿@inject NavigationManager Navigation
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @code {
+    [Parameter] public string Path { get; set; }    
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo($"counter");
+        Navigation.NavigateTo($"{Path}");
     }
 }

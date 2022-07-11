@@ -11,28 +11,26 @@
                     {
                         var claims = context.User.Claims;
                         var userId = claims.Where(c => c.Type == "oid").FirstOrDefault().Value;
-                        var workspaceId = claims.Where(c => c.Type == "workspaceId").FirstOrDefault().Value;
-                        var workspaceOwnerId = claims.Where(c => c.Type == "workspaceOwnerId").FirstOrDefault().Value;
-                        var hasValidSubscription = claims.Where(c => c.Type == "hasValidSubscription").FirstOrDefault().Value;
+                        var workspaceId = context.User.HasClaim(c => c.Type == "workspaceId") ? claims.Where(c => c.Type == "workspaceId").FirstOrDefault().Value : String.Empty;
+                        var workspaceOwnerId = context.User.HasClaim(c => c.Type == "workspaceOwnerId") ? claims.Where(c => c.Type == "workspaceOwnerId").FirstOrDefault().Value : String.Empty;
+                        var hasValidSubscription = context.User.HasClaim(c => c.Type == "hasValidSubscription") ? true : false;
 
-                        if (String.IsNullOrWhiteSpace(workspaceId) && userId == workspaceOwnerId)
+                        if (String.IsNullOrWhiteSpace(workspaceId))
                         {
                             //TODO: Redirect to the onboarding Page
-                            <RedirectToUserAccount />
-                        }
-                        else
-                        {
-                            //TODO: Redirect to page explaoinm they arent the owner and what they should do
+                            <RedirectToPage Path="setupworkspace" />
                         }
 
-                        if (!String.IsNullOrWhiteSpace(workspaceId) && userId == workspaceOwnerId)
+                        if (String.IsNullOrWhiteSpace(workspaceId) == false && (hasValidSubscription == false) && (userId == workspaceOwnerId))
                         {
                             //TODO: Redirect to the subscriptions page
+                            <RedirectToPage Path="managesubscription" />
                         }
                         else
                         {
-                            //TODO: Redirect to page explaoinm they arent the owner and what they should do
-                        }                        
+                            //TODO: Redirect to page explaining they arent the owner and what they should do
+                            <RedirectToPage Path="inviteduserinfo" />
+                        }
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>

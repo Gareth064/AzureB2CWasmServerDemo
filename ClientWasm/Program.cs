@@ -30,7 +30,9 @@ builder.Services.AddMsalAuthentication<RemoteAuthenticationState,CustomRemoteUse
 }).AddAccountClaimsPrincipalFactory<RemoteAuthenticationState,CustomRemoteUserAccount,CustomAccountFactory>();
 
 builder.Services.AddAuthorizationCore(options =>
-    options.AddPolicy("HasValidSubscription", policy => policy.RequireClaim("HasValidSubscription"))
-);
+    options.AddPolicy("CanUseApp", policy => 
+        policy.RequireClaim("workspaceId")
+                    .RequireClaim("hasValidSubscription"))
+    );
 
 await builder.Build().RunAsync();

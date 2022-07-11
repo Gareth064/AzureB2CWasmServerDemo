@@ -38,7 +38,7 @@ else
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<CheckWorkspaceStatusMiddleware>();
+//app.UseMiddleware<CheckWorkspaceStatusMiddleware>();
 //app.UseMiddleware<CheckSubscriptionStatusMiddleware>();
 app.MapControllers();
 app.Run();

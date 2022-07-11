@@ -26,7 +26,7 @@ public class CustomAccountFactory : AccountClaimsPrincipalFactory<CustomRemoteUs
     }
 
     public override async ValueTask<ClaimsPrincipal> CreateUserAsync(
-        CustomRemoteUserAccount account, 
+        CustomRemoteUserAccount account,
         RemoteAuthenticationUserOptions options)
     {
         var initialUser = await base.CreateUserAsync(account, options);
@@ -37,14 +37,24 @@ public class CustomAccountFactory : AccountClaimsPrincipalFactory<CustomRemoteUs
             var userAzureId = initialUser.Claims.FirstOrDefault(c => c.Type == "oid").Value;
 
             HttpClient httpClient = serviceProvider.GetService<IHttpClientFactory>().CreateClient("ServerAPI");
-            var workspace = await httpClient.GetFromJsonAsync<Workspace>($"Authorization/GetWorkspaceByUserId/{userAzureId}");
+            Workspace workspace = null;
+            try
+            {
+                workspace = await httpClient.GetFromJsonAsync<Workspace>($"Authorization/GetWorkspaceByUserId/{userAzureId}");
+            }
+            catch
+            {
+                workspace = null;  
+            }
 
             if (workspace is not null)
             {
                 var userIdentity = (ClaimsIdentity)initialUser.Identity;
                 userIdentity.AddClaim(new Claim("workspaceId", workspace.Id));
                 userIdentity.AddClaim(new Claim("workspaceName", workspace.Name));
-                userIdentity.AddClaim(new Claim("hasValidSubscription", workspace.HasValidSubscription.ToString()));
+                userIdentity.AddClaim(new Claim("workspaceOwnerId", workspace.Owner));
+                if (workspace.HasValidSubscription)
+                    userIdentity.AddClaim(new Claim("hasValidSubscription", workspace.HasValidSubscription.ToString()));
             }
         }
 
