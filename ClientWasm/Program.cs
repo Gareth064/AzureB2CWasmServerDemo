@@ -15,8 +15,7 @@ builder.Services.AddHttpClient("ServerAPI", client =>
     .AddHttpMessageHandler(sp =>
     {
         var handler = sp.GetService<AuthorizationMessageHandler>()
-        .ConfigureHandler(
-            authorizedUrls: new[] { "https://localhost:7016" });
+        .ConfigureHandler(authorizedUrls: new[] { "https://localhost:7016" });
        
         return handler;
     });

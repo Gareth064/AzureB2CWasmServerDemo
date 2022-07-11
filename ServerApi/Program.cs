@@ -1,5 +1,8 @@
+global using SharedLibrary.Models;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
+using ServerApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,5 +38,7 @@ else
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<CheckWorkspaceStatusMiddleware>();
+//app.UseMiddleware<CheckSubscriptionStatusMiddleware>();
 app.MapControllers();
 app.Run();

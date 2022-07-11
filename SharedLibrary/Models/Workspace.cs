@@ -5,9 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SharedLibrary.Models;
-public class Tenant
+public class Workspace
 {
     public string Id { get; set; }
     public string Name { get; set; }
     public bool HasValidSubscription { get; set; }
+    public string Owner { get; set; }
 }

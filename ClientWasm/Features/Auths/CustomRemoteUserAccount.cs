@@ -6,6 +6,6 @@ namespace ClientWasm.Features.Auths;
 /// </summary>
 public class CustomRemoteUserAccount : RemoteUserAccount
 {
-    public string TenantId { get; set; }
+    public string WorkspaceId { get; set; }
     public bool HasValidSubscription { get; set; } = false;
 }

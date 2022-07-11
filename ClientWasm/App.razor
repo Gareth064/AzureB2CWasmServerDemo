@@ -9,7 +9,30 @@
                     }
                     else
                     {
+                        var claims = context.User.Claims;
+                        var userId = claims.Where(c => c.Type == "oid").FirstOrDefault().Value;
+                        var workspaceId = claims.Where(c => c.Type == "workspaceId").FirstOrDefault().Value;
+                        var workspaceOwnerId = claims.Where(c => c.Type == "workspaceOwnerId").FirstOrDefault().Value;
+                        var hasValidSubscription = claims.Where(c => c.Type == "hasValidSubscription").FirstOrDefault().Value;
+
+                        if (String.IsNullOrWhiteSpace(workspaceId) && userId == workspaceOwnerId)
+                        {
+                            //TODO: Redirect to the onboarding Page
                             <RedirectToUserAccount />
+                        }
+                        else
+                        {
+                            //TODO: Redirect to page explaoinm they arent the owner and what they should do
+                        }
+
+                        if (!String.IsNullOrWhiteSpace(workspaceId) && userId == workspaceOwnerId)
+                        {
+                            //TODO: Redirect to the subscriptions page
+                        }
+                        else
+                        {
+                            //TODO: Redirect to page explaoinm they arent the owner and what they should do
+                        }                        
                     }
                 </NotAuthorized>
             </AuthorizeRouteView>

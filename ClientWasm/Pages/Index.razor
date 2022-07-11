@@ -2,7 +2,7 @@
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@attribute [Authorize(Policy ="HasValidSubscription")]
+@attribute [AllowAnonymous]
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject HttpClient Http
 
@@ -11,8 +11,8 @@
 @if (user is not null)
 {
     <h1 style="color: darkgreen">User is authenticated!</h1>
-    <h2>TenantId</h2>
-    @tenantId
+    <h2>WorkspaceId</h2>
+    @workspaceId
     <h2>Username</h2>
     @userName
     <h2>Claims</h2>
@@ -29,16 +29,20 @@ else
 }
 
 @code {
-    private string tenantId = "";
+    private string workspaceId = "";
     private string userName = "";
     private ClaimsPrincipal? user;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        user = authState.User;
-        var claims = user.Claims;
-        tenantId = claims.Where(c => c.Type == "tenantId").FirstOrDefault().Value;
-        userName = user.Identity.Name;
+        
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            user = authState.User;
+            var claims = user.Claims;
+            workspaceId = claims.Where(c => c.Type == "workspaceId").FirstOrDefault().Value;
+            userName = user.Identity.Name;
+        }
     }
 }

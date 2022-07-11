@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication.Internal;
+using SharedLibrary.Models;
+using System.Net.Http.Json;
 using System.Security.Claims;
 
 namespace ClientWasm.Features.Auths;
@@ -32,14 +34,17 @@ public class CustomAccountFactory : AccountClaimsPrincipalFactory<CustomRemoteUs
         if (initialUser.Identity.IsAuthenticated)
         {
 
-            HttpClient httpClient = serviceProvider.GetService<IHttpClientFactory>().CreateClient("ServerAPI");
-            string? tenantId = await httpClient.GetStringAsync("tenant/2bba57e9-85d8-4f8b-b7d4-a401e96c4179");
+            var userAzureId = initialUser.Claims.FirstOrDefault(c => c.Type == "oid").Value;
 
-            if (String.IsNullOrWhiteSpace(tenantId) == false)
+            HttpClient httpClient = serviceProvider.GetService<IHttpClientFactory>().CreateClient("ServerAPI");
+            var workspace = await httpClient.GetFromJsonAsync<Workspace>($"Authorization/GetWorkspaceByUserId/{userAzureId}");
+
+            if (workspace is not null)
             {
                 var userIdentity = (ClaimsIdentity)initialUser.Identity;
-                userIdentity.AddClaim(new Claim("tenantId", tenantId));
-                userIdentity.AddClaim(new Claim("HasValidSubscription", "true"));
+                userIdentity.AddClaim(new Claim("workspaceId", workspace.Id));
+                userIdentity.AddClaim(new Claim("workspaceName", workspace.Name));
+                userIdentity.AddClaim(new Claim("hasValidSubscription", workspace.HasValidSubscription.ToString()));
             }
         }
 
